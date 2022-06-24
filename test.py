@@ -137,7 +137,7 @@ keyboard.send_keys('^e')
 expo = app.window(title="Exportar información")
 if expo.exists(timeout=2):
         app['Exportar información']['ComboBox2'].type_keys("%{DOWN}")
-        app['Exportar información']['ComboBox2'].type_keys("te")
+        app['Exportar información']['ComboBox2'].type_keys(data['formato'])
         app['Exportar información']['ComboBox2'].click()
         app['Exportar Información']['Edit7'].type_keys(data['repositorio'])
         app['Exportar información']['Button3'].click()
@@ -147,7 +147,7 @@ error2 = app.window(title="Error")
     
 if error2.exists(timeout=5):
     app['Error']['Button'].click()
-    app['Exportar Información']['Edit7'].type_keys("C:/Users/auditor/Desktop")
+    app['Exportar Información']['Edit7'].type_keys(data['repositorio_pre'])
     app['Exportar información']['Button3'].click()
 
 confi=app.window(title="Confirmación")
