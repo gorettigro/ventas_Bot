@@ -1,19 +1,37 @@
-from importlib.resources import path
-from socket import timeout
-from turtle import tilt, title
-from unicodedata import name
+import ctypes
+import sys
 import pywinauto
 import win32clipboard
 import json
 import codecs
-import os
+import psutil
+
+from concurrent.futures import process
+from importlib.resources import path
+from socket import timeout
+from turtle import tilt, title
+from unicodedata import name
 from time import sleep, time
 from pywinauto import keyboard
 from pywinauto.application import Application
 
+
+PROCNAME = "SAEWIN80.exe"
+
+pid = None
+
+for proc in psutil.process_iter():
+    if proc.name() == PROCNAME:
+        pid=proc.pid
+
+if not pid:
+    print("No se ha encontrado el proceso")
+    ctypes.windll.user32.MessageBoxW(0,"No se ha encontrado el proceso","Error",1)
+    sys.exit(0)
+
 #app = Application().start('SAEWIN80.exe')
-app = Application(backend="win32").connect(path=r"C:\Program Files (x86)\Aspel\Aspel-SAE 8.0\SAEWIN80.exe")
-main=app.window(title_re='.*Aspel-SAE.*')
+app = pywinauto.Application(backend="win32").connect(process=pid)
+main=app.window(title_re='.*Aspel.*')
 lg=app.window(title='Abrir empresa')
 
 with codecs.open("ventasData.json", "r", encoding="utf-8-sig") as file: 
@@ -24,7 +42,26 @@ if lg.exists(timeout=5):
     app['Abrir empresa']['Edit7'].type_keys(data['password'])
     app['Abrir empresa']['Button3'].click()
 
-main.set_focus()
+if main.exists(timeout=5 and not lg.exists(timeout=5)):
+    main.set_focus()
+else:
+    for i in range(15):
+        try:
+            app.set_focus()
+            keyboard.send_keys('%x')
+            keyboard.send_keys('%a')
+
+            if lg.exists(timeout=5):
+                app['Abrir empresa']['Edit5'].type_keys(data['user_name'])
+                app['Abrir empresa']['Edit7'].type_keys(data['password'])
+                app['Abrir empresa']['Button3'].click()
+            
+            main.set_focus()
+            break
+
+        except Exception as e:
+            pass
+
 keyboard.send_keys('%v')
 sleep(3)
 keyboard.send_keys('%p1')
@@ -40,24 +77,28 @@ if filtrop.exists(timeout=2):
         app['Filtro de pedidos']['ComboBox4'].type_keys(data['filtro_pedidos'])
         app['Filtro de pedidos']['ComboBox4'].click_input()
         app['Filtro de pedidos']['Button21'].click()
+        print("Pedido Found")
+else:
+    print("Pedido not Found")
 
 sleep(3)
+
 keyboard.send_keys('^e')
 exp = app.window(title="Exportar información")
 if exp.exists(timeout=2):
         app['Exportar información']['ComboBox2'].type_keys("%{DOWN}")
-        app['Exportar información']['ComboBox2'].type_keys("te")
+        app['Exportar información']['ComboBox2'].type_keys(data['formato'])
         app['Exportar información']['ComboBox2'].click()
         app['Exportar Información']['Edit7'].type_keys(data['repositorio'])
         app['Exportar información']['Button3'].click()
         
-sleep(3)
+sleep(6)
 
 error = app.window(title="Error")
     
 if error.exists(timeout=5):
     app['Error']['Button'].click()
-    app['Exportar Información']['Edit7'].type_keys("C:/Users/auditor/Desktop")
+    app['Exportar Información']['Edit7'].type_keys(data['repositorio_pre'])
     app['Exportar información']['Button3'].click()
 
 confi=app.window(title="Confirmación")
@@ -85,8 +126,12 @@ if filtrov.exists(timeout=2):
         app['Filtro de facturas']['ComboBox4'].type_keys(data['filtro_facturas'])
         app['Filtro de facturas']['ComboBox4'].click_input()
         app['Filtro de facturas']['Button22'].click()
+        print("Factura Found")
+else:
+    print("Factura Not Found")
 
 sleep(3)
+
 keyboard.send_keys('^e')
 
 expo = app.window(title="Exportar información")
@@ -96,7 +141,7 @@ if expo.exists(timeout=2):
         app['Exportar información']['ComboBox2'].click()
         app['Exportar Información']['Edit7'].type_keys(data['repositorio'])
         app['Exportar información']['Button3'].click()
-sleep(3)
+sleep(6)
 
 error2 = app.window(title="Error")
     
@@ -118,4 +163,4 @@ keyboard.send_keys('%{F4}')
 
 confi2=app.window(title="Confirmación")
 if confi2.exists(timeout=2):
-        app['Confirmación']['Button1'].click()
+    app['Confirmación']['Button1'].click()
