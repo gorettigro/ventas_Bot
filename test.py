@@ -36,6 +36,7 @@ lg=app.window(title='Abrir empresa')
 
 with codecs.open("ventasData.json", "r", encoding="utf-8-sig") as file: 
     data = json.load(file)
+    print(data)
     
 if lg.exists(timeout=5):
     app['Abrir empresa']['Edit5'].type_keys(data['user_name'])
@@ -45,7 +46,7 @@ if lg.exists(timeout=5):
 if main.exists(timeout=5 and not lg.exists(timeout=5)):
     main.set_focus()
 else:
-    for i in range(15):
+    for i in range(25):
         try:
             app.set_focus()
             keyboard.send_keys('%x')
@@ -62,10 +63,11 @@ else:
         except Exception as e:
             pass
 
+sleep(6)
 keyboard.send_keys('%v')
 sleep(3)
 keyboard.send_keys('%p1')
-sleep(3)
+sleep(5)
 
 ven=main.window(title="Pedidos")
 keyboard.send_keys('{F5}')
@@ -89,7 +91,8 @@ if exp.exists(timeout=2):
         app['Exportar información']['ComboBox2'].type_keys("%{DOWN}")
         app['Exportar información']['ComboBox2'].type_keys(data['formato'])
         app['Exportar información']['ComboBox2'].click()
-        app['Exportar Información']['Edit7'].type_keys(data['repositorio'])
+        app['Exportar Información']['Edit7'].type_keys(data['repositorio'], with_spaces=True)
+        sleep(3)
         app['Exportar información']['Button3'].click()
         
 sleep(6)
@@ -98,7 +101,7 @@ error = app.window(title="Error")
     
 if error.exists(timeout=5):
     app['Error']['Button'].click()
-    app['Exportar Información']['Edit7'].type_keys(data['repositorio_pre'])
+    app['Exportar Información']['Edit7'].type_keys(data['repositorio_pre'], with_spaces=True)
     app['Exportar información']['Button3'].click()
 
 confi=app.window(title="Confirmación")
@@ -134,12 +137,13 @@ sleep(3)
 
 keyboard.send_keys('^e')
 
-expo = app.window(title="Exportar información")
-if expo.exists(timeout=2):
+expo2 = app.window(title="Exportar información")
+if expo2.exists(timeout=2):
         app['Exportar información']['ComboBox2'].type_keys("%{DOWN}")
         app['Exportar información']['ComboBox2'].type_keys(data['formato'])
         app['Exportar información']['ComboBox2'].click()
-        app['Exportar Información']['Edit7'].type_keys(data['repositorio'])
+        app['Exportar Información']['Edit7'].type_keys(data['repositorio'], with_spaces=True)
+        sleep(3)
         app['Exportar información']['Button3'].click()
 sleep(6)
 
@@ -147,20 +151,36 @@ error2 = app.window(title="Error")
     
 if error2.exists(timeout=5):
     app['Error']['Button'].click()
-    app['Exportar Información']['Edit7'].type_keys(data['repositorio_pre'])
+    app['Exportar Información']['Edit7'].type_keys(data['repositorio_pre'], with_spaces=True)
     app['Exportar información']['Button3'].click()
-
-confi=app.window(title="Confirmación")
-if confi.exists(timeout=2):
-    app['Confirmación']['Button1'].click()
-
-info=app.window(title="Información")
-if info.exists(timeout=2):
-    app['Información']['Button'].click()
-
-main.set_focus()
-keyboard.send_keys('%{F4}')
 
 confi2=app.window(title="Confirmación")
 if confi2.exists(timeout=2):
+    app['Confirmación']['Button1'].click()
+
+sleep(15)
+
+info2=app.window(title="Información")
+if info2.exists(timeout=2):
+    app['Información']['Button1'].click()
+
+if main.exists(timeout=2):
+    main.set_focus()
+else:
+    for i in range(25):
+        try:
+            app.set_focus()
+            keyboard.send_keys('^%e')
+            main.set_focus()
+            break
+
+        except Exception as e:
+            pass
+
+#main.set_focus()
+
+keyboard.send_keys('%{F4}')
+
+confi3=app.window(title="Confirmación")
+if confi3.exists(timeout=2):
     app['Confirmación']['Button1'].click()
