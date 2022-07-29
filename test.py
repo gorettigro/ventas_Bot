@@ -5,6 +5,8 @@ import win32clipboard
 import json
 import codecs
 import psutil
+import os
+import shutil
 
 from concurrent.futures import process
 from importlib.resources import path
@@ -15,6 +17,22 @@ from time import sleep, time
 from pywinauto import keyboard
 from pywinauto.application import Application
 
+
+with codecs.open("ventasData.json", "r", encoding="utf-8-sig") as file: 
+    data = json.load(file)
+
+#repo = data['repositorio']
+
+#shutil.rmtree(repo)
+folder = data['repositorio']
+
+for root, dirs, files in os.walk(folder):
+    for f in files:
+        os.unlink(os.path.join(root, f))
+    for d in dirs:
+        shutil.rmtree(os.path.join(root, d))
+
+sleep(8)
 
 PROCNAME = "SAEWIN80.exe"
 
@@ -34,9 +52,6 @@ app = pywinauto.Application(backend="win32").connect(process=pid)
 main=app.window(title_re='.*Aspel.*')
 lg=app.window(title='Abrir empresa')
 
-with codecs.open("ventasData.json", "r", encoding="utf-8-sig") as file: 
-    data = json.load(file)
-    print(data)
     
 if lg.exists(timeout=5):
     app['Abrir empresa']['Edit5'].type_keys(data['user_name'])
@@ -63,9 +78,9 @@ else:
         except Exception as e:
             pass
 
-sleep(6)
+sleep(10)
 keyboard.send_keys('%v')
-sleep(3)
+sleep(5)
 keyboard.send_keys('%p1')
 sleep(5)
 
@@ -162,7 +177,9 @@ sleep(15)
 
 info2=app.window(title="Información")
 if info2.exists(timeout=2):
-    app['Información']['Button1'].click()
+    app['Información']['Button'].click()
+
+sleep(8)
 
 if main.exists(timeout=2):
     main.set_focus()
@@ -178,8 +195,11 @@ else:
             pass
 
 #main.set_focus()
+sleep(3)
 
 keyboard.send_keys('%{F4}')
+
+sleep(3)
 
 confi3=app.window(title="Confirmación")
 if confi3.exists(timeout=2):

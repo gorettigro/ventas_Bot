@@ -1,9 +1,9 @@
 {
     "user_name": "EXTERNO",
     "password": "1436",
-    "formato": "excel",
+    "formato": "texto",
     "filtro_facturas": "No filtrar fecha",
     "filtro_pedidos": "No filtrar fecha",
-    "repositorio_pre": "C:/Users/auditor/Desktop/ventas",
-    "repositorio": "C:/Users/auditor/Deskto"
+    "repositorio_pre": "C:/Users/auditor/Desktop",
+    "repositorio": "C:/Users/auditor/Desktop/ventas"
 }
