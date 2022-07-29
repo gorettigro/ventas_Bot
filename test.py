@@ -1,3 +1,4 @@
+from asyncio import subprocess
 import ctypes
 import sys
 import pywinauto
@@ -7,6 +8,7 @@ import codecs
 import psutil
 import os
 import shutil
+import subprocess
 
 from concurrent.futures import process
 from importlib.resources import path
@@ -204,3 +206,13 @@ sleep(3)
 confi3=app.window(title="Confirmación")
 if confi3.exists(timeout=2):
     app['Confirmación']['Button1'].click()
+
+sleep(5)
+
+app2 = Application(backend="win32").connect(title_re="Facturas.txt: Bloc de notas")
+keyboard.send_keys('%{F4}')
+
+sleep(5)
+
+app3 = Application(backend="win32").connect(title_re="Pedidos.txt: Bloc de notas")
+keyboard.send_keys('%{F4}')
