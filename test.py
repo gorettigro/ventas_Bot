@@ -8,7 +8,6 @@ import codecs
 import psutil
 import os
 import shutil
-import subprocess
 
 from concurrent.futures import process
 from importlib.resources import path
@@ -23,16 +22,8 @@ from pywinauto.application import Application
 with codecs.open("ventasData.json", "r", encoding="utf-8-sig") as file: 
     data = json.load(file)
 
-#repo = data['repositorio']
-
-#shutil.rmtree(repo)
-folder = data['repositorio']
-
-for root, dirs, files in os.walk(folder):
-    for f in files:
-        os.unlink(os.path.join(root, f))
-    for d in dirs:
-        shutil.rmtree(os.path.join(root, d))
+os.remove(f"{data['repositorio']}/Facturas.txt")
+os.remove(f"{data['repositorio']}/Pedidos.txt")
 
 sleep(8)
 
@@ -80,7 +71,7 @@ else:
         except Exception as e:
             pass
 
-sleep(10)
+sleep(25)
 keyboard.send_keys('%v')
 sleep(5)
 keyboard.send_keys('%p1')
