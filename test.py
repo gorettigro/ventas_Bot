@@ -22,8 +22,15 @@ from pywinauto.application import Application
 with codecs.open("ventasData.json", "r", encoding="utf-8-sig") as file: 
     data = json.load(file)
 
-os.remove(f"{data['repositorio']}/Facturas.txt")
-os.remove(f"{data['repositorio']}/Pedidos.txt")
+if os.path.exists(f"{data['repositorio']}/Facturas.txt"):
+    os.remove(f"{data['repositorio']}/Facturas.txt")
+else:
+    print("El archivo no existe")
+
+if os.path.exists(f"{data['repositorio']}/Pedidos.txt"):
+    os.remove(f"{data['repositorio']}/Pedidos.txt")
+else:
+    print("El archivo no existe")
 
 sleep(8)
 
